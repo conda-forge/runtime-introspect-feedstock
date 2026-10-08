@@ -1,0 +1,54 @@
+schema_version: 1
+
+context:
+  version: "0.4.3"
+
+package:
+  name: runtime-introspect
+  version: ${{ version }}
+
+source:
+  url: https://files.pythonhosted.org/packages/source/r/runtime-introspect/runtime_introspect-${{ version }}.tar.gz
+  sha256: 698e5db7f4c5f5b990554a93b10d1a3ecfc5319d7280380ee3b4430bcefbeba8
+
+build:
+  number: 1
+  noarch: python
+  script: ${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+
+requirements:
+  host:
+    - python ${{ python_min }}.*
+    - flit-core >=3.11,<5
+    - pip
+  run:
+    - python >=${{ python_min }}
+
+tests:
+  - python:
+      imports:
+        - runtime_introspect
+      pip_check: true
+      python_version:
+        - ${{ python_min }}.*
+        - "*"
+  - files:
+      source:
+        - tests
+    requirements:
+      run:
+        - python ${{ python_min }}.*
+        - pip
+        - pytest
+    script:
+      - pytest -ra tests
+
+about:
+  summary: A small Python library to seamlessly introspect interpreter features at runtime
+  license: GPL-3.0-only
+  license_file: LICENSE
+  homepage: https://github.com/neutrinoceros/runtime-introspect
+
+extra:
+  recipe-maintainers:
+    - neutrinoceros
